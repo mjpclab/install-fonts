@@ -1,0 +1,20 @@
+{
+  "name": "install-fonts",
+  "version": "0.0.1",
+  "description": "utility for installing fonts",
+  "type": "module",
+  "main": "bundle.cjs",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^2.74.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjpclab/install-fonts.git"
+  }
+}
