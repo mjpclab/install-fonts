@@ -1,18 +1,18 @@
 'use strict';
 
-var os = require('os');
-var fs = require('fs');
-var path = require('path');
-var promises = require('fs/promises');
-var process = require('process');
-var child_process = require('child_process');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
+const promises = require('fs/promises');
+const process = require('process');
+const child_process = require('child_process');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var process__default = /*#__PURE__*/_interopDefaultLegacy(process);
+const os__default = /*#__PURE__*/_interopDefaultLegacy(os);
+const fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+const path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+const process__default = /*#__PURE__*/_interopDefaultLegacy(process);
 
 const osPlatform = os__default["default"].platform();
 const isWin = osPlatform === "win32";
@@ -164,7 +164,7 @@ if (isWin) {
   fontDir$1 = "/dev/null";
 }
 
-var sysFontDir = fontDir$1;
+const sysFontDir = fontDir$1;
 
 let fontDir;
 if (isWin) {
@@ -177,9 +177,9 @@ if (isWin) {
   fontDir = "/dev/null";
 }
 
-var userFontDir = fontDir;
+const userFontDir = fontDir;
 
-var scope = {
+const scope = {
   system: "system",
   user: "user",
 };
