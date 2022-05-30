@@ -1,6 +1,6 @@
 import process from "process";
 import path from "path";
-import { isWin, isLinux, isDarwin } from "./osplatform.js";
+import { isWin, isLinux, isDarwin } from "./os-platform.js";
 
 let fontDir;
 if (isWin) {
