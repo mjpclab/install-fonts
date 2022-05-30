@@ -14,7 +14,7 @@ if (isWin) {
   }
   fontDir = path.join(sysRoot, "Fonts");
 } else if (isLinux) {
-  fontDir = "/usr/share/fonts/js-install-font";
+  fontDir = "/usr/share/fonts/js-install-fonts";
 } else if (isDarwin) {
   fontDir = "/Library/Fonts";
 } else {
