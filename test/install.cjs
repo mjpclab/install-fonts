@@ -1,4 +1,4 @@
-const install = require("./bundle.cjs");
+const install = require("../bundle.cjs");
 
 install({
   scope: "system",

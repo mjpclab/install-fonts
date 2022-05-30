@@ -1,4 +1,4 @@
-import install from "./main.js";
+import install from "../main.js";
 
 install({
   scope: "system",
