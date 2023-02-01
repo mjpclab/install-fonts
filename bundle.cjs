@@ -1,20 +1,13 @@
 'use strict';
 
-const os = require('os');
-const fs = require('fs');
-const path = require('path');
-const promises = require('fs/promises');
-const process = require('process');
-const child_process = require('child_process');
+const os = require('node:os');
+const fs = require('node:fs');
+const path = require('node:path');
+const promises = require('node:fs/promises');
+const process = require('node:process');
+const node_child_process = require('node:child_process');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-const os__default = /*#__PURE__*/_interopDefaultLegacy(os);
-const fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-const path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-const process__default = /*#__PURE__*/_interopDefaultLegacy(process);
-
-const osPlatform = os__default["default"].platform();
+const osPlatform = os.platform();
 const isWin = osPlatform === "win32";
 const isLinux = osPlatform === "linux";
 const isDarwin = osPlatform === "darwin";
@@ -22,10 +15,10 @@ const isDarwin = osPlatform === "darwin";
 function ensureDir(path) {
   let stat;
   try {
-    stat = fs__default["default"].statSync(path);
+    stat = fs.statSync(path);
   } catch (err) {
     if (err.code === "ENOENT") {
-      fs__default["default"].mkdirSync(path, { recursive: true });
+      fs.mkdirSync(path, { recursive: true });
       return;
     } else {
       throw err;
@@ -41,12 +34,12 @@ function copyFilesToDir(srcFiles, dstPath) {
   if (!Array.isArray(srcFiles)) srcFiles = [srcFiles];
 
   const copyTasks = srcFiles.map((srcFile) => {
-    const basename = path__default["default"].basename(srcFile);
-    const dstFile = path__default["default"].join(dstPath, basename);
+    const basename = path.basename(srcFile);
+    const dstFile = path.join(dstPath, basename);
 
     return new Promise((resolve) => {
-      const rdStream = fs__default["default"].createReadStream(srcFile);
-      const wrStream = fs__default["default"].createWriteStream(dstFile);
+      const rdStream = fs.createReadStream(srcFile);
+      const wrStream = fs.createWriteStream(dstFile);
       wrStream.on("close", () => resolve([srcFile, dstFile]));
       wrStream.on("error", () => resolve([srcFile]));
       rdStream.pipe(wrStream);
@@ -75,17 +68,17 @@ async function getDirFiles(dirPaths, suffixes, doReaddir, isRecursive) {
             .filter((entry) => entry.isFile())
             .map((entry) => entry.name)
             .filter((file) => matchSuffix(file, suffixes))
-            .map((file) => path__default["default"].join(dirPath, file));
+            .map((file) => path.join(dirPath, file));
           results.push.apply(results, files);
 
           const subDirPaths = data
             .filter((entry) => entry.isDirectory())
-            .map((entry) => path__default["default"].join(dirPath, entry.name));
+            .map((entry) => path.join(dirPath, entry.name));
           if (subDirPaths.length) return doGetDirFiles(subDirPaths, results);
         } else {
           const files = data
             .filter((file) => matchSuffix(file, suffixes))
-            .map((file) => path__default["default"].join(dirPath, file));
+            .map((file) => path.join(dirPath, file));
           results.push.apply(results, files);
         }
       });
@@ -141,23 +134,23 @@ async function getFileList(options) {
   dirFiles = await getDirFiles(options.recurseDirs, suffixes, true, true);
   results.push.apply(results, dirFiles);
 
-  results = results.map((file) => path__default["default"].resolve(file));
+  results = results.map((file) => path.resolve(file));
   return results;
 }
 
 let fontDir$1;
 if (isWin) {
-  let sysRoot = process__default["default"].env.SystemRoot || process__default["default"].env.windir;
+  let sysRoot = process.env.SystemRoot || process.env.windir;
   if (!sysRoot) {
-    sysRoot = process__default["default"].env.SystemDrive;
+    sysRoot = process.env.SystemDrive;
     if (sysRoot) sysRoot += "\\Windows";
   }
   if (!sysRoot) {
     sysRoot = "C:\\Windows";
   }
-  fontDir$1 = path__default["default"].join(sysRoot, "Fonts");
+  fontDir$1 = path.join(sysRoot, "Fonts");
 } else if (isLinux) {
-  fontDir$1 = "/usr/share/fonts/js-install-font";
+  fontDir$1 = "/usr/share/fonts/js-install-fonts";
 } else if (isDarwin) {
   fontDir$1 = "/Library/Fonts";
 } else {
@@ -168,11 +161,11 @@ const sysFontDir = fontDir$1;
 
 let fontDir;
 if (isWin) {
-  fontDir = path__default["default"].join(os__default["default"].homedir(), "Fonts");
+  fontDir = path.join(os.homedir(), "Fonts");
 } else if (isLinux) {
-  fontDir = path__default["default"].join(os__default["default"].homedir(), ".local/share/fonts");
+  fontDir = path.join(os.homedir(), ".local/share/fonts");
 } else if (isDarwin) {
-  fontDir = path__default["default"].join(os__default["default"].homedir(), "Library/Fonts");
+  fontDir = path.join(os.homedir(), "Library/Fonts");
 } else {
   fontDir = "/dev/null";
 }
@@ -203,13 +196,13 @@ async function install$3(options, srcDstPairs) {
   const isSystemScope = options.scope === scope.system;
   const regRoot = isSystemScope ? "HKLM" : "HKCU";
   const regPath =
-    regRoot + String.raw`\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`;
+    regRoot + "\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 
   dstFiles.forEach((file) => {
-    const basename = path__default["default"].basename(file);
+    const basename = path.basename(file);
     const fontName = getFileMainName(basename) + " (TrueType)";
     const targetFile = isSystemScope ? basename : file;
-    child_process.execFileSync("reg", [
+    node_child_process.execFileSync("reg", [
       "add",
       regPath,
       "/f",
@@ -225,7 +218,7 @@ async function install$3(options, srcDstPairs) {
 
 function install$2(options, srcDstPairs) {
   try {
-    child_process.execFileSync("fc-cache", ["-f"]);
+    node_child_process.execFileSync("fc-cache", ["-f"]);
   } catch (err) {}
 }
 

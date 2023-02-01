@@ -4,6 +4,9 @@ export default {
     file: "bundle.cjs",
     format: "cjs",
     exports: "auto",
-    preferConst: true,
+    generatedCode: {
+      constBindings: true,
+    },
   },
+  external: [/^node:/],
 };
