@@ -10,16 +10,33 @@ function copyFilesToDir(srcFiles, dstPath) {
     const basename = path.basename(srcFile);
     const dstFile = path.join(dstPath, basename);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const rdStream = fs.createReadStream(srcFile);
       const wrStream = fs.createWriteStream(dstFile);
       wrStream.on("close", () => resolve([srcFile, dstFile]));
-      wrStream.on("error", () => resolve([srcFile]));
+      wrStream.on("error", reject);
       rdStream.pipe(wrStream);
-    }).catch((err) => {});
+    });
   });
 
-  return Promise.all(copyTasks);
+  return Promise.allSettled(copyTasks).then((results) => {
+    const reasons = [];
+    const values = [];
+
+    results.forEach((r) => {
+      if (r.status === "rejected") {
+        reasons.push(r.reason);
+      } else {
+        values.push(r.value);
+      }
+    });
+
+    if (reasons.length > 0) {
+      throw new Error(reasons.join("\n"));
+    } else {
+      return values;
+    }
+  });
 }
 
 export default copyFilesToDir;
