@@ -1,6 +1,6 @@
 {
   "name": "install-fonts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "utility for installing fonts",
   "type": "module",
   "main": "main.js",
