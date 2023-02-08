@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "utility for installing fonts",
   "type": "module",
-  "main": "bundle.cjs",
+  "main": "main.js",
   "scripts": {
     "build": "rollup -c"
   },

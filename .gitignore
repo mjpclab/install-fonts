@@ -2,6 +2,7 @@
 *.log
 test/fonts/
 node_modules/
+bundle.cjs
 package-lock.json
 .package-lock.json
 yarn.lock
