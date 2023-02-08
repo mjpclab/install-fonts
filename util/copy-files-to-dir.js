@@ -1,9 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import ensureDir from "./ensure-dir.js";
+import allResolved from "./all-resolved.js";
 
-function copyFilesToDir(srcFiles, dstPath) {
-  ensureDir(dstPath);
+async function copyFilesToDir(srcFiles, dstPath) {
+  await ensureDir(dstPath);
   if (!Array.isArray(srcFiles)) srcFiles = [srcFiles];
 
   const copyTasks = srcFiles.map((srcFile) => {
@@ -19,24 +20,7 @@ function copyFilesToDir(srcFiles, dstPath) {
     });
   });
 
-  return Promise.allSettled(copyTasks).then((results) => {
-    const reasons = [];
-    const values = [];
-
-    results.forEach((r) => {
-      if (r.status === "rejected") {
-        reasons.push(r.reason);
-      } else {
-        values.push(r.value);
-      }
-    });
-
-    if (reasons.length > 0) {
-      throw new Error(reasons.join("\n"));
-    } else {
-      return values;
-    }
-  });
+  return allResolved(copyTasks);
 }
 
 export default copyFilesToDir;

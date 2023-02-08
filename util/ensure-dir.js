@@ -1,18 +1,18 @@
-import fs from "node:fs";
+import { stat, mkdir } from "node:fs/promises";
 
-function ensureDir(path) {
-  let stat;
+async function ensureDir(path) {
+  let result;
   try {
-    stat = fs.statSync(path);
+    result = await stat(path);
   } catch (err) {
     if (err.code === "ENOENT") {
-      fs.mkdirSync(path, { recursive: true });
+      await mkdir(path, { recursive: true });
       return;
     } else {
       throw err;
     }
   }
-  if (!stat.isDirectory()) {
+  if (!result.isDirectory()) {
     throw new Error("path is not a directory");
   }
 }
